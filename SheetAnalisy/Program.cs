@@ -13,6 +13,7 @@ namespace SheetAnalisy
         private static List<string> ProductsTypes;
         private static List<string> SpecialProducts;
         private static List<string> SpecialProductsTypes;
+        
         private static double ExpensiveProductValue;
         private static double CheapierGenericValue;
         private static double SpecialProductsTotal;
@@ -84,7 +85,6 @@ namespace SheetAnalisy
             content = content.Substring(1);
             Console.WriteLine($"{info}: {content}");
         }
-
         static void Print(List<string> itemList, double value, string info)
         {
             var content = string.Empty;
@@ -96,6 +96,7 @@ namespace SheetAnalisy
             Console.WriteLine($"{info}: {content}. RS{value}");
         }
 
+        // Método para fazer o que o string.split de maneira personalizada
         static string[] Spliter(string csvLine)
         {
             var original = csvLine;
@@ -127,18 +128,21 @@ namespace SheetAnalisy
 
         }
 
+        //Incluir novo tipo de produto na lista
         static void AddNewProductType(string type)
         {
             if (!ProductsTypes.Contains(type))
                 ProductsTypes.Add(type);
         }
 
+        //Incluir novo tipo de produto na lista de produtos que seguem regras especiais
         static void AddNewSpecialProductType(string type)
         {
             if (!SpecialProductsTypes.Contains(type))
                 SpecialProductsTypes.Add(type);
         }
 
+        //Busca dos produtos genéricos mais baratos
         static void FindCheapierGeneric(string product, string type, string value)
         {
             
@@ -162,6 +166,7 @@ namespace SheetAnalisy
 
         }
 
+        //Busca dos produtos mais caros
         static void ExpensiveProductManager(string value, string product)
         {
             try
@@ -188,6 +193,7 @@ namespace SheetAnalisy
             
         }
 
+        //Busca dos produtos que seguem regras especiais
         static void FindSpecialProducts(string product, string value, string marketable, string tarja, string type, string material)
         {
             var minimumValue = 100.0;
@@ -203,6 +209,7 @@ namespace SheetAnalisy
             }
         }
 
+        //Salvar produtos especiais
         static async Task WriteSpecialProductsAsync()
         {
             await File.WriteAllLinesAsync(@"C:\Files\output.csv", SpecialProducts);
