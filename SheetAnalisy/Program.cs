@@ -13,7 +13,8 @@ namespace SheetAnalisy
         private static List<string> ProductsTypes;
         private static List<string> SpecialProducts;
         private static List<string> SpecialProductsTypes;
-        
+        private static List<string> SpecialProductsMaterialList;
+        private static Dictionary<string, string> NormalProductsDict;
         private static double ExpensiveProductValue;
         private static double CheapierGenericValue;
         private static double SpecialProductsTotal;
@@ -27,6 +28,9 @@ namespace SheetAnalisy
             ExpensiveProductValue = 0.0;
             SpecialProductsTotal = 0.0;
             CheapierGenericValue = double.PositiveInfinity;
+
+            SpecialProductsMaterialList = new List<string>();
+            NormalProductsDict = new Dictionary<string, string>();
 
             var fileName = @"C:\Files\TA_PRECO_MEDICAMENTO.csv";
             var fileStream = File.OpenRead(fileName);
@@ -68,6 +72,7 @@ namespace SheetAnalisy
                 Print(CheapierGenerics, CheapierGenericValue, "Cheap generics");
 
             streamReader.Close();
+            RegraEspecial();
             await WriteSpecialProductsAsync();
         }
 
@@ -206,7 +211,36 @@ namespace SheetAnalisy
                 SpecialProducts.Add($"{material};{product};{value};{type}");
                 SpecialProductsTotal += newValue;
                 AddNewSpecialProductType(type);
+                if(!SpecialProductsMaterialList.Contains(material))
+                    SpecialProductsMaterialList.Add(material);
             }
+            else
+            {
+                NormalProductsDict.TryAdd(material, $"{product}:{newValue}");
+            }
+        }
+
+        static void RegraEspecial()
+        {
+            Console.WriteLine(); int count = 0;
+            foreach (var material in SpecialProductsMaterialList)
+            {
+                string value;
+                var exist = NormalProductsDict.TryGetValue(material, out value);
+                if (exist)
+                {
+                    var items = value.Split(":");
+                    if (Double.Parse(items[1]) < 100.0)
+                    {
+                        Console.WriteLine($"{material} X {value}");
+                        count++;
+                    }
+                    
+
+                }
+            }
+            Console.WriteLine(count);
+
         }
 
         //Salvar produtos especiais
